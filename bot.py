@@ -275,7 +275,6 @@ async def sinfo(ctx):
 @client.event
 async def on_member_join(member):
     text = """Esenlikler,  Ittihat ve Terakki'ye hoşgeldin,\n{}.""".format(member.display_name)
-    member.id = 
     text_2 = '''Burda sosyal medyada 
 yaymak icin propaganda 
 üretip yayınlıyoruz. 
