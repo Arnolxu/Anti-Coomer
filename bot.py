@@ -275,7 +275,7 @@ async def sinfo(ctx):
 @client.event
 async def on_member_join(member):
     text = """Esenlikler,  Ittihat ve Terakki'ye hoşgeldin,\n{}.""".format(member.display_name)
-
+    member.id = 
     text_2 = '''Burda sosyal medyada 
 yaymak icin propaganda 
 üretip yayınlıyoruz. 
@@ -288,6 +288,7 @@ atabilirsin'''
     draw.text((165,100), text_2, (0, 0, 0), font=font, stroke_width=2, stroke_fill=(255, 255, 255))
     img.save("text.png")
     channel = client.get_channel(894685294010445854)
+    await channel.send(f'Esenlikler! <@{member.id}> ')
     await channel.send(file=discord.File("text.png"))
 
 client.run(token)
