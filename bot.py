@@ -269,6 +269,7 @@ async def sinfo(ctx):
 
 @client.event
 async def on_member_join(member):
+    channel = client.get_channel(894685294010445854)
     await channel.send(f'Esenlikler, <@{member.id}>! <#897191745501155428> kanalindan kayit olabilirsin!')
 
 client.run(token)
