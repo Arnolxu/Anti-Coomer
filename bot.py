@@ -7,7 +7,6 @@ import funcs
 import typing
 import string
 import time
-from PIL import Image, ImageFont, ImageDraw
 load_dotenv()
 intents = discord.Intents.default()
 intents.members= True
@@ -27,10 +26,6 @@ async def on_message(message):
   lowercase = msg.lower().replace("i̇", "i")
   if f"<@!{client.user.id}>" == lowercase or f"<@{client.user.id}>" == lowercase:
     await message.reply("Prefixim: `" + prefix + "`")
-  if "hedef 2023" in lowercase:
-    await message.add_reaction("🇧")
-    await message.add_reaction("🇴")
-    await message.add_reaction("🇷")
   await client.process_commands(message)
 
 @client.event
@@ -274,20 +269,6 @@ async def sinfo(ctx):
 
 @client.event
 async def on_member_join(member):
-    text = """Esenlikler,  Ittihat ve Terakki'ye hoşgeldin,\n{}.""".format(member.display_name)
-    text_2 = '''Burda sosyal medyada 
-yaymak icin propaganda 
-üretip yayınlıyoruz. 
-#chp-propaganda'ya 
-atabilirsin'''
-    img = Image.open('sickbackground.jpg')
-    draw = ImageDraw.Draw(img)
-    font = ImageFont.truetype("arial.ttf", 27)
-    draw.text((165,28), text, (0, 0, 0), font=font, stroke_width=2, stroke_fill=(255, 255, 255))
-    draw.text((165,100), text_2, (0, 0, 0), font=font, stroke_width=2, stroke_fill=(255, 255, 255))
-    img.save("text.png")
-    channel = client.get_channel(894685294010445854)
-    await channel.send(f'Esenlikler! <@{member.id}> ')
-    await channel.send(file=discord.File("text.png"))
+    await channel.send(f'Esenlikler, <@{member.id}>! <#897191745501155428> kanalindan kayit olabilirsin!')
 
 client.run(token)

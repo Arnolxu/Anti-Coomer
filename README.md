@@ -1,6 +1,6 @@
 # Anti-Coomer
 
-Botu calistirmak icin `.env` isimli bir dosya olusturun ve `discord_bot_token`'i bot tokeninizle degistirerek bunu icine yazin:
+Botu calistirmak icin `.env.example` adli dosyayi `.env` dosyasina kopyalayip `discord_bot_token`'i bot tokeninizle degistirerek bunu icine yazin:
 ```
 TOKEN=discord_bot_token
 ```
