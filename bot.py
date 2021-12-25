@@ -57,6 +57,15 @@ async def yazitura(ctx):
     result = rndm.choice(["Yazi", "Tura"])
     await ctx.send(result)
 
+@client.command(help='Rastgele Ataturk resimleri atar.')
+async def ataturk(ctx):
+    global resim_path
+    for x in range(1,5):
+        resim_path = Image.open(f'Ata{x}')
+    resim = rndm.choice(resim_path)
+    await ctx.send()
+
+
 @client.command(help="Kugus Digiligi")
 async def kusdili(ctx, mode, *args):
   response = ""
