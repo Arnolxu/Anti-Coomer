@@ -51,6 +51,14 @@ async def unban(ctx, id: int):
 async def yazitura(ctx):
     result = rndm.choice(["Yazi", "Tura"])
     await ctx.send(result)
+ #Anti-Coomer dosyasinin altina AtaturkResimleri diye bir folder ac ve 5 tane ataturk resmi yukle sonra artiririz.
+@client.command(help='Rastgele Ataturk resimleri atar.')
+async def ataturk(ctx):
+    global resim_path
+    for x in range(1,5):
+        resim_path = Image.open(f'AtaturkResimleri/Ata{x}')
+    resim = rndm.choice(resim_path)
+    await ctx.send(file=resim)
 
 @client.command(help="Kugus Digiligi")
 async def kusdili(ctx, mode, *args):
