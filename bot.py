@@ -18,7 +18,8 @@ intents.members = True
 token = os.getenv("TOKEN")
 count = 3
 status = True
-
+cogs = ['moderation.py', 'utils.py', 'misc.py']
+ 
 @client.event
 async def on_message(message):
   if message.author == client.user:
@@ -37,33 +38,14 @@ async def on_message(message):
 async def on_ready():
     change_status.start()
 
-@client.command()
-@commands.has_permissions(ban_members=True)
-async def ban(ctx, member: discord.Member, *, reason=None):
-    await member.ban(reason=reason)
-    embed = discord.Embed(description=f"{user.display_name} adli kisi yasaklandi.", color=0xed1822)
-    await ctx.send(embed=embed)
-
-@client.command()
-@commands.has_permissions(administrator=True)
-async def unban(ctx, id: int):
-    user = await client.fetch_user(id)
-    await ctx.guild.unban(user)
-    embed = discord.Embed(description=f"{user.display_name} adli kisinin yasagi kaldirildi.", color=0xed1822)
-    await ctx.send(embed=embed)
-
-@client.command(help="Yazi tura atar, sonuc rastgeledir.")
-async def yazitura(ctx):
-    result = rndm.choice(["Yazi", "Tura"])
-    await ctx.send(result)
 
 @client.command(help='Rastgele Ataturk resimleri atar.')
 async def ataturk(ctx):
     global resim_path
     for x in range(1,5):
-        resim_path = Image.open(f'Ata{x}')
+        resim_path = Image.open(f'AtaturkResimleri/Ata{x}')
     resim = rndm.choice(resim_path)
-    await ctx.send()
+    await ctx.send(file=resim)
 
 
 @client.command(help="Kugus Digiligi")
@@ -95,12 +77,7 @@ async def change_status():
             await client.change_presence(activity=discord.Activity(type=discord.ActivityType.watching, name="Üye sayisi: " + str(members)))
         count = count + 1
 
-@client.command()
-@commands.has_permissions(kick_members=True)
-async def kick(ctx, user: discord.Member, *, reason=None):
-    await user.kick(reason=reason)
-    embed = discord.Embed(description=f"{user.display_name} adli kisi atildi.", color=0xed1822)
-    await ctx.send(embed=embed)
+
 
 @client.command(help="Sadece bot gelistiricisi kullanabilir, botun durumunu degistirir.")
 async def status(ctx, *args):
@@ -116,63 +93,14 @@ async def status(ctx, *args):
             status=False
             await client.change_presence(activity=discord.Activity(type=discord.ActivityType.watching, name=response))
 
-@client.command(help="Uye hakkinda bilgi verir")
-async def minfo(ctx, member: typing.Optional[discord.Member]):
-    if member == None:
-        member = ctx.author
-    if member.bot:
-        kullanici_botmu = "Evet"
-    else:
-        kullanici_botmu = "Hayir"
-
-    kullanici_id = member.id
-    kullanici_rolleri_list = [r.mention for r in member.roles if r != ctx.guild.default_role]
-    kullanici_butun_roller_fix = ", ".join(kullanici_rolleri_list)
-    kullanici_sunucuya_giris_obj = str(member.joined_at)
-    kullanici_bolunmus_sunucuya_giris = kullanici_sunucuya_giris_obj.split(".")
-    kullanici_sunucuya_giris = kullanici_bolunmus_sunucuya_giris[0]
-    kullanici_hesap_tarihi_obj = str(member.created_at)
-    kullanici_bolunmus_hesap_tarihi = kullanici_hesap_tarihi_obj.split(".")
-    kullanici_hesap_tarihi = kullanici_bolunmus_hesap_tarihi[0]
-
-    embed = discord.Embed(title=f"{member.name} Adli Kişinin Detaylari", description=f"**Kullanici ID:**\n{kullanici_id}\n\n**Bot mu?**\n{kullanici_botmu}\n\n**Roller ({len(kullanici_rolleri_list)}):**\n{kullanici_butun_roller_fix}\n\n**Sunucuya Giriş Tarihi:**\n{kullanici_sunucuya_giris}\n\n**Hesap Oluşturma Tarihi:**\n{kullanici_hesap_tarihi}", color=0xed1822)
-    embed.set_thumbnail(url=member.avatar_url)
-    await ctx.send(embed=embed)
-
-@commands.guild_only()
-@client.command(help="Bot hakkinda bilgi verir.")
-async def stats(ctx):
-    servers = len(client.guilds)
-    members = 0
-    for guild in client.guilds:
-        members += guild.member_count - 1
-    embed = discord.Embed(description=f"""
-Sunucu sayisi: **{str(servers)}**
-Üye sayisi: **{str(members)}**
-API Pingi: **{str(int(client.latency * 1000))}**
-Donus Pingi: olcüyorum..
-İşlemci: **{funcs.get_processor_name()}**
-RAM: **{funcs.get_ram()}**
-""", color=0XFF1123)
-    before = time.monotonic()
-    msg = await ctx.send(embed=embed)
-    ping = (time.monotonic() - before) * 1000
-    embed = discord.Embed(description=f"""
-Sunucu sayisi: **{str(servers)}**
-Üye sayisi: **{str(members)}**
-API Pingi: **{str(int(client.latency * 1000))}**
-Donus Pingi: **{int(ping)}**
-İşlemci: **{funcs.get_processor_name()}**
-RAM: **{funcs.get_ram()}**
-""", color=0XFF1123)
-    await msg.edit(embed=embed)
-
-@client.command(help="Verdiginiz listeden rastgele bir sey secer.")
-async def random(ctx, *things):
-    if things == ('never', 'gonna', 'give', 'you', 'up'):
-        await ctx.send("https://www.youtube.com/watch?v=dQw4w9WgXcQ")
-    else:
-        await ctx.send(rndm.choice(things))
+@client.command
+async def load(ctx, cog):
+    client.load_extension(cog)
+    await ctx.send('Cog yukleniyor...')
+@client.command
+async def load(ctx, cog):
+    client.unload_extension(cog)
+    await ctx.send('Cog devre disi birakiliyor...')
 
 @client.command(help="Kullaniciyi kayit eder.")
 async def kayit(ctx):
@@ -221,83 +149,7 @@ async def on_command_error(ctx, error):
     else:
         raise error
 
-@client.command()
-async def avatar(ctx, member=None):
-    if(member != None):
-        if(member[0] == "<"):
-            mbr =member.replace("<","").replace(">","").replace("@","").replace("!","")
-            av = await client.fetch_user(mbr)
-            embed = discord.Embed(title="Avatar URL",url=f"{av.avatar_url}")
-            embed.set_image(url=f"{av.avatar_url}")
-            await ctx.send(embed=embed)
 
-        
-    if member == None:
-        member = ctx.author
-        show_avatar = discord.Embed(
-            title="Avatar URL",
-            url=f"{member.avatar_url}",
-            color = discord.Color.green()
-        )
-        show_avatar.set_image(url="{}".format(member.avatar_url))
-        await ctx.send(embed=show_avatar)
-
-    if type(member) == str:
-        c = len(str(member))
-        for i in ctx.guild.members:
-            a = str(i).lower()
-            if a[0:c] == str(member).lower():
-                show_avatar = discord.Embed(
-                    title="Avatar URL",
-                    url=f"{i.avatar_url}",
-                    color = discord.Color.green()
-                )
-                show_avatar.set_image(url="{}".format(i.avatar_url))
-                await ctx.send(embed=show_avatar)
-                break
-
-@client.command()
-async def sinfo(ctx):
-
-        server = ctx.message.guild
-
-        roles = str(len(server.roles))
-        emojis = str(len(server.emojis))
-        channels = str(len(server.channels))
-        owner = await client.fetch_user(server.owner_id)
-
-        embed = discord.Embed(title=server.name, description='Sunucu Bilgisi', color=0XFF1123)
-        embed.set_thumbnail(url=server.icon_url)
-        embed.add_field(name="Olusturulma tarihi:", value=server.created_at.strftime('%d %B %Y at %H:%M UTC+3'), inline=False)
-        embed.add_field(name="Sunucu ID'si:", value=server.id, inline=False)
-        embed.add_field(name="Uye sayisi:", value=server.member_count, inline=True)
-        embed.add_field(name="Sunucu Sahibi:", value=owner.name, inline=True)
-        embed.add_field(name="Sunucu Bolgesi:", value=string.capwords(str(server.region)), inline=True)
-        embed.add_field(name="Onaylama Seviyesi:", value=str(server.verification_level).replace("none", "Yok").replace("low", "Dusuk").replace("medium", "Orta").replace("high", "Yuksek").replace("extreme", ""), inline=True)
-        embed.add_field(name="Rol Sayisi:", value=roles, inline=True)
-        embed.add_field(name="Emoji Sayisi:", value=emojis, inline=True)
-        embed.add_field(name="Kanal Sayisi:", value=channels, inline=True)
-
-        await ctx.send(embed=embed) \
-
-
-@client.event
-async def on_member_join(member):
-    text = """Esenlikler,  Ittihat ve Terakki'ye hoşgeldin,\n{}.""".format(member.display_name)
-
-    text_2 = '''Burda sosyal medyada 
-yaymak icin propaganda 
-üretip yayınlıyoruz. 
-#chp-propaganda'ya 
-atabilirsin'''
-    img = Image.open('sickbackground.jpg')
-    draw = ImageDraw.Draw(img)
-    font = ImageFont.truetype("arial.ttf", 27)
-    draw.text((165,28), text, (0, 0, 0), font=font, stroke_width=2, stroke_fill=(255, 255, 255))
-    draw.text((165,100), text_2, (0, 0, 0), font=font, stroke_width=2, stroke_fill=(255, 255, 255))
-    img.save("text.png")
-    channel = client.get_channel(894685294010445854)
-    await channel.send(f'Esenlikler, <@{member.id}>')
-    await channel.send(file=discord.File("text.png"))
-
+for cog in cogs:
+    client.load_extension(cog)
 client.run(token)
